@@ -1,0 +1,50 @@
+name: healthai
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.9.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_svg: ^2.2.0
+  image_picker: ^1.2.0
+  lottie: ^3.3.1
+  shared_preferences: ^2.5.3
+  firebase_core: ^4.0.0
+  firebase_auth: ^6.0.1
+  google_sign_in: ^7.1.1
+  cloud_firestore: ^6.0.0
+  firebase_storage: ^13.0.0
+  cached_network_image: ^3.4.1
+  collection: ^1.19.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logohealteai.svg"
+  adaptive_icon_background: "white"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/animations/
+    - assets/images/
+    - assets/images/Home.svg
+    - assets/images/articles.svg
+    - assets/images/bandage.svg
+    - assets/images/dumbbell.svg
+    - assets/images/medical_consultation.svg
+    - assets/images/notification.svg
+    - assets/images/profile2.svg
+    - assets/images/thermometer.svg
