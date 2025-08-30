@@ -3,7 +3,7 @@ import 'package:healthai/core/widget/custom_button.dart';
 import 'package:healthai/core/widget/custom_text_field.dart';
 import 'package:healthai/navigation/main_screen.dart';
 
-import '../../services/local_storage_service.dart';
+import '../../../services/local_storage_service.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});

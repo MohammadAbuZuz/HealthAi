@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../core/widget/custom_button.dart';
-import '../../core/widget/custom_text_field.dart';
-import '../../services/local_storage_service.dart';
-import '../profile/complete_profile_screen.dart';
+import '../../../core/widget/custom_button.dart';
+import '../../../core/widget/custom_text_field.dart';
+import '../../../services/local_storage_service.dart';
+import '../complete_profile_screen.dart';
 
 class SingupScreen extends StatefulWidget {
   @override

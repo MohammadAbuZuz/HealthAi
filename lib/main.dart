@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:healthai/features/pageView/splash_screen.dart';
 import 'package:healthai/features/profile/complete_profile_screen.dart';
-import 'package:healthai/features/register/singUp_screen.dart';
+import 'package:healthai/features/profile/register/singUp_screen.dart';
 import 'package:healthai/navigation/main_screen.dart';
 
-import 'features/register/login_screen.dart';
+import 'features/profile/register/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

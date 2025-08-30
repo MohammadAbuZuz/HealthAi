@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:healthai/features/register/login_screen.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../profile/register/login_screen.dart';
 
 class SplashWrapper extends StatefulWidget {
   const SplashWrapper({super.key});

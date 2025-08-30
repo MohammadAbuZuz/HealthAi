@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:healthai/core/widget/custom_button.dart';
 import 'package:healthai/core/widget/custom_text_field.dart';
-import 'package:healthai/features/register/singUp_screen.dart';
+import 'package:healthai/features/profile/register/singUp_screen.dart';
 import 'package:healthai/navigation/main_screen.dart';
 
-import '../../services/local_storage_service.dart';
+import '../../../services/local_storage_service.dart';
 import 'forgot_password.dart';
 
 class LoginScreen extends StatefulWidget {

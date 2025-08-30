@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:healthai/features/profile/edit_profile_screen.dart'; // تأكد من هذا الاستيراد
-import 'package:healthai/features/register/login_screen.dart';
+import 'package:healthai/features/profile/register/login_screen.dart';
 import 'package:healthai/services/local_storage_service.dart';
 
 class ProfileScreen extends StatefulWidget {

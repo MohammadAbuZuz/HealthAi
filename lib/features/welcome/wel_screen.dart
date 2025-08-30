@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../register/login_screen.dart';
+import '../profile/register/login_screen.dart';
 
 class WelScreen extends StatefulWidget {
   const WelScreen({super.key});
