@@ -47,7 +47,7 @@ class _MainScreenState extends State<MainScreen> {
                 BlendMode.srcIn,
               ),
             ),
-            label: 'Home',
+            label: 'الرئيسية',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
@@ -57,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
                 BlendMode.srcIn,
               ),
             ),
-            label: 'Medical',
+            label: 'استشارة طبية',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
@@ -67,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
                 BlendMode.srcIn,
               ),
             ),
-            label: 'Notification',
+            label: 'التنبيهات',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
@@ -77,7 +77,7 @@ class _MainScreenState extends State<MainScreen> {
                 BlendMode.srcIn,
               ),
             ),
-            label: 'Articles',
+            label: 'مقالات',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
@@ -87,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
                 BlendMode.srcIn,
               ),
             ),
-            label: 'Profile',
+            label: 'ملف الشخصي',
           ),
         ],
       ),

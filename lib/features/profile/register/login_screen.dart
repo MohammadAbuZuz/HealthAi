@@ -119,12 +119,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: 20),
                           Text(
-                            'Welcome back!',
+                            'مرحبًا بعودتك!',
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           SizedBox(height: 18),
                           Text(
-                            'Log in to existing LOGO account',
+                            'تسجيل إلى الحسابك الحالي',
                             style: Theme.of(context).textTheme.titleSmall,
                           ),
                         ],
@@ -136,17 +136,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller:
                           emailController, // استخدام متحكم البريد الإلكتروني
                       obscureText: false,
-                      hintText: 'Email', // تغيير من Username إلى Email
+                      hintText: 'بريد إلكتروني', // تغيير من Username إلى Email
                       iconPath: 'assets/images/email.svg', // تغيير الأيقونة
                       validator: (String? value) {
                         if (value == null || value.trim().isEmpty) {
-                          return "Please Enter Your Email ";
+                          return "الرجاء إدخال بريدك الإلكتروني";
                         }
                         // تحقق من صيغة البريد الإلكتروني
                         if (!RegExp(
                           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
                         ).hasMatch(value)) {
-                          return "Please enter a valid email";
+                          return "الرجاء إدخال بريد إلكتروني صالح";
                         }
                         return null;
                       },
@@ -154,11 +154,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     CustomTextField(
                       controller: passwordController,
                       obscureText: true,
-                      hintText: 'Password',
+                      hintText: 'كلمة المرور',
                       iconPath: 'assets/images/lock.svg',
                       validator: (String? value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Please Enter Your Full Password';
+                          return 'الرجاء إدخال كلمة المرور الكاملة';
                         }
                         return null;
                       },
@@ -175,17 +175,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                       child: Text(
-                        'Forgot Password?',
+                        'هل نسيت كلمة السر؟',
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
                     ),
                     CustomButton(
-                      text: 'LOG IN',
+                      text: 'تسجيل الدخول',
                       onPressed: () =>
                           _signIn(context), // استدعاء دالة تسجيل الدخول
                     ),
                     SizedBox(height: 30),
-                    Center(child: Text('Or sign up using')),
+                    Center(
+                      child: Text(
+                        'أو قم بالتسجيل باستخدام الخدمة غير متاحة حاليا',
+                      ),
+                    ),
                     SizedBox(height: 20),
                     Padding(
                       padding: EdgeInsets.only(left: 50, right: 50),
@@ -203,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Don’t have count?'),
+                        Text('لا يوجد لديك حساب؟'),
                         TextButton(
                           onPressed: () {
                             Navigator.push(
@@ -214,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                           child: Text(
-                            'Sign Up',
+                            'اشتراك',
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),

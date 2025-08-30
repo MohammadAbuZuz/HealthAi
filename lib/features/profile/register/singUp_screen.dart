@@ -111,23 +111,23 @@ class _SingupScreenState extends State<SingupScreen> {
                     children: [
                       SizedBox(height: 50),
                       Text(
-                        'Let’s Get Started!',
+                        'دعونا نبدأ!',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       SizedBox(height: 1),
                       Text(
-                        'Create an account on MNZL to get all features',
+                        'قم بإنشاء حساب على MNZL للحصول على كافة الميزات',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       SizedBox(height: 32),
                       CustomTextField(
                         controller: firstUsernameController,
                         obscureText: false,
-                        hintText: 'UserName',
+                        hintText: 'اسم المستخدم',
                         iconPath: 'assets/images/user.svg',
                         validator: (String? value) {
                           if (value == null || value.trim().isEmpty) {
-                            return "Please Enter Your UserName ";
+                            return "الرجاء إدخال اسم المستخدم الخاص بك";
                           }
                           return null;
                         },
@@ -135,17 +135,17 @@ class _SingupScreenState extends State<SingupScreen> {
                       CustomTextField(
                         controller: emailController, // تغيير الاسم ليكون أوضح
                         obscureText: false,
-                        hintText: 'Email',
+                        hintText: 'بريد إلكتروني',
                         iconPath: 'assets/images/email.svg',
                         validator: (String? value) {
                           if (value == null || value.trim().isEmpty) {
-                            return "Please Enter Your Email ";
+                            return "الرجاء إدخال بريدك الإلكتروني";
                           }
                           // تحقق من صيغة البريد الإلكتروني
                           if (!RegExp(
                             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
                           ).hasMatch(value)) {
-                            return "Please enter a valid email";
+                            return "الرجاء إدخال بريد إلكتروني صالح";
                           }
                           return null;
                         },
@@ -153,15 +153,15 @@ class _SingupScreenState extends State<SingupScreen> {
                       CustomTextField(
                         controller: passwordController,
                         obscureText: true,
-                        hintText: 'Password',
+                        hintText: 'كلمة المرور',
                         iconPath: 'assets/images/lock.svg',
                         validator: (String? value) {
                           if (value == null || value.trim().isEmpty) {
-                            return "Please Enter Your Password ";
+                            return "الرجاء إدخال كلمة المرور الخاصة بك";
                           }
                           // تحقق من قوة كلمة المرور (6 أحرف على الأقل)
                           if (value.length < 6) {
-                            return "Password must be at least 6 characters";
+                            return "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل";
                           }
                           return null;
                         },
@@ -169,27 +169,27 @@ class _SingupScreenState extends State<SingupScreen> {
                       CustomTextField(
                         controller: confirmPasswordController,
                         obscureText: true,
-                        hintText: 'Confirm Password',
+                        hintText: 'بالتأكيد كلمة المرور',
                         iconPath: 'assets/images/lock.svg',
                         validator: (String? value) {
                           if (value == null || value.trim().isEmpty) {
-                            return "Please Enter Your Confirm Password ";
+                            return "الرجاء إدخال كلمة المرور الخاصة بك للتأكيد";
                           }
                           if (value != passwordController.text) {
-                            return "Passwords do not match";
+                            return "كلمات المرور غير متطابقة";
                           }
                           return null;
                         },
                       ),
                       CustomButton(
-                        text: 'CREATE',
+                        text: 'انشاء',
                         onPressed: () =>
                             _createAccount(context), // استدعاء دالة الإنشاء
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Already have an account?'),
+                          Text('هل لديك حساب بالفعل؟'),
                           TextButton(
                             onPressed: () {
                               Navigator.pop(
@@ -197,7 +197,7 @@ class _SingupScreenState extends State<SingupScreen> {
                               ); // العودة لشاشة تسجيل الدخول
                             },
                             child: Text(
-                              'Login here',
+                              'تسجيل الدخول هنا',
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ),

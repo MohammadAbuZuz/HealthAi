@@ -5,6 +5,8 @@ import 'package:healthai/features/profile/complete_profile_screen.dart';
 import 'package:healthai/features/profile/register/singUp_screen.dart';
 import 'package:healthai/navigation/main_screen.dart';
 
+import 'Setting/settings_page.dart';
+import 'features/profile/profile_screen.dart';
 import 'features/profile/register/login_screen.dart';
 
 void main() async {
@@ -20,6 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'HealthAI',
+
       theme: ThemeData(
         pageTransitionsTheme: PageTransitionsTheme(
           builders: {
@@ -36,6 +39,11 @@ class MyApp extends StatelessWidget {
         '/main': (context) => MainScreen(), // أهم سطر
         '/complete-profile': (context) =>
             CompleteProfileScreen(userName: '', email: ''),
+        '/profile': (context) => const ProfileScreen(),
+        '/settings': (context) => const SettingsPage(),
+      },
+      builder: (context, child) {
+        return Directionality(textDirection: TextDirection.rtl, child: child!);
       },
     );
   }

@@ -31,7 +31,7 @@ class LocalStorageService {
       await prefs.setString(_usersKey, json.encode(users));
       return true;
     } catch (e) {
-      print('Error saving user: $e');
+      print('خطأ في حفظ المستخدم: $e');
       return false;
     }
   }
@@ -56,7 +56,7 @@ class LocalStorageService {
 
       return null;
     } catch (e) {
-      print('Error logging in: $e');
+      print('خطأ في تسجيل الدخول: $e');
       return null;
     }
   }

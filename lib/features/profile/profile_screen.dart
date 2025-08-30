@@ -5,6 +5,8 @@ import 'package:healthai/features/profile/edit_profile_screen.dart'; // تأكد
 import 'package:healthai/features/profile/register/login_screen.dart';
 import 'package:healthai/services/local_storage_service.dart';
 
+import '../../Setting/settings_page.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -135,7 +137,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _showDeleteConfirmation();
         break;
       case 'settings':
-        // TODO: افتح شاشة الإعدادات
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
         break;
     }
   }
@@ -157,15 +161,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
+            color: const Color(0xFF769DAD),
             onSelected: _handleMenuSelection,
             itemBuilder: (BuildContext context) => [
               PopupMenuItem<String>(
                 value: 'edit',
                 child: Row(
                   children: [
-                    Icon(Icons.edit, color: Colors.blue[700]),
+                    Icon(Icons.edit, color: Color(0xFFFFFFFF)),
                     const SizedBox(width: 8),
-                    const Text("تعديل البيانات الشخصية"),
+                    const Text(
+                      "تعديل البيانات الشخصية",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
                   ],
                 ),
               ),
@@ -173,9 +181,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 value: 'settings',
                 child: Row(
                   children: [
-                    Icon(Icons.settings, color: Colors.grey[700]),
+                    Icon(Icons.settings, color: Color(0xFFFFFFFF)),
                     const SizedBox(width: 8),
-                    const Text("الإعدادات"),
+                    const Text(
+                      "الإعدادات",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
                   ],
                 ),
               ),
@@ -184,9 +195,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 value: 'logout',
                 child: Row(
                   children: [
-                    Icon(Icons.logout, color: Colors.orange[700]),
+                    Icon(Icons.logout, color: Colors.white),
                     const SizedBox(width: 8),
-                    const Text("تسجيل الخروج"),
+                    const Text(
+                      "تسجيل الخروج",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
                   ],
                 ),
               ),
@@ -194,9 +208,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 value: 'delete',
                 child: Row(
                   children: [
-                    Icon(Icons.delete_forever, color: Colors.red[700]),
+                    Icon(Icons.delete_forever, color: Colors.white),
                     const SizedBox(width: 8),
-                    const Text("حذف الحساب"),
+                    const Text(
+                      "حذف الحساب",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
                   ],
                 ),
               ),
@@ -266,12 +283,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Text(
+            "$label :",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
           Text(value),
-          Text(":$label", style: const TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );
