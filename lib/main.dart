@@ -4,14 +4,23 @@ import 'package:healthai/features/pageView/splash_screen.dart';
 import 'package:healthai/features/profile/complete_profile_screen.dart';
 import 'package:healthai/features/profile/register/singUp_screen.dart';
 import 'package:healthai/navigation/main_screen.dart';
+import 'package:provider/provider.dart';
 
-import 'Setting/settings_page.dart';
+import 'features/Setting/settings_page.dart';
+import 'features/notifications/provider/notification_provider.dart';
 import 'features/profile/profile_screen.dart';
 import 'features/profile/register/login_screen.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

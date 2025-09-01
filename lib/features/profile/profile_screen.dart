@@ -5,7 +5,7 @@ import 'package:healthai/features/profile/edit_profile_screen.dart'; // تأكد
 import 'package:healthai/features/profile/register/login_screen.dart';
 import 'package:healthai/services/local_storage_service.dart';
 
-import '../../Setting/settings_page.dart';
+import '../Setting/settings_page.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -37,34 +37,73 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       userData = updatedData;
     });
+    // حفظ البيانات المحدثة في التخزين المحلي مع استدعاء دالة _deleteAccount(); من local
+    LocalStorageService.updateUser(updatedData);
   }
 
+  //رسالة تأكديد لحذف الحساب مع الحذف
   Future<void> _showDeleteConfirmation() async {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("تأكيد الحذف"),
-          content: const Text(
-            "هل أنت متأكد من أنك تريد حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.",
+          title: const Text(
+            "تأكيد الحذف",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.delete_forever, color: Colors.red, size: 30),
+              SizedBox(height: 10),
+              Text(
+                "هل أنت متأكد من أنك تريد حذف حسابك؟",
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 5),
+              Text(
+                "لا يمكن التراجع عن هذا الإجراء.",
+                style: TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text("إلغاء"),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.cancel_outlined, size: 18),
+                  SizedBox(width: 4),
+                  Text("إلغاء"),
+                ],
+              ),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true);
-                _deleteAccount();
+                Navigator.of(context).pop(true); // إرجاع true للموافقة
+                _deleteAccount(); // استدعاء دالة الحذف
               },
-              child: const Text("حذف", style: TextStyle(color: Colors.red)),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.delete_forever, size: 18, color: Colors.red),
+                  SizedBox(width: 4),
+                  Text("حذف", style: TextStyle(color: Colors.red)),
+                ],
+              ),
             ),
           ],
         );
       },
-    );
+    ).then((value) {
+      if (value == true) {
+        _deleteAccount(); // التأكد من استدعاء الحذف إذا وافق المستخدم
+      }
+    });
   }
+  //رسالة تأكيد لتسجيل الخروج
 
   Future<void> _showLogoutConfirmation() async {
     return showDialog(
@@ -92,19 +131,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _deleteAccount() async {
-    if (userData != null && userData!['email'] != null) {
-      await LocalStorageService.deleteUser(userData!['email']);
-    }
-    if (!mounted) return;
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => LoginScreen()),
-      (route) => false,
-    );
+    try {
+      if (userData != null && userData!['email'] != null) {
+        await LocalStorageService.deleteUser(userData!['email']);
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text("تم حذف الحساب بنجاح")));
+        if (!mounted) return;
+
+        // إظهار رسالة نجاح
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("تم حذف الحساب بنجاح")));
+
+        // الانتقال إلى شاشة تسجيل الدخول
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => LoginScreen()),
+          (route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("لا يمكن العثور على بيانات المستخدم")),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("حدث خطأ أثناء حذف الحساب: $e")));
+    }
   }
 
   Future<void> _signOut() async {
@@ -125,6 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _handleMenuSelection(String value) {
     switch (value) {
       case 'edit':
+        // الانتقال إلى شاشة التعديل
         showEditProfileBottomSheet(
           context,
           onProfileUpdated: _updateUserData, // هنا بنمرر الدالة
@@ -155,6 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xFF769DAD),
         title: const Text("البروفايل", style: TextStyle(color: Colors.white)),
@@ -166,55 +222,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
             itemBuilder: (BuildContext context) => [
               PopupMenuItem<String>(
                 value: 'edit',
-                child: Row(
-                  children: [
-                    Icon(Icons.edit, color: Color(0xFFFFFFFF)),
-                    const SizedBox(width: 8),
-                    const Text(
-                      "تعديل البيانات الشخصية",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ],
+                child: ListTile(
+                  leading: const Icon(Icons.edit, color: Colors.white),
+                  title: const Text(
+                    "تعديل البيانات",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
               PopupMenuItem<String>(
                 value: 'settings',
-                child: Row(
-                  children: [
-                    Icon(Icons.settings, color: Color(0xFFFFFFFF)),
-                    const SizedBox(width: 8),
-                    const Text(
-                      "الإعدادات",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ],
+                child: ListTile(
+                  leading: const Icon(Icons.settings, color: Colors.white),
+                  title: const Text(
+                    "الإعدادات",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
-              const PopupMenuDivider(),
+              const PopupMenuDivider(height: 1),
               PopupMenuItem<String>(
                 value: 'logout',
-                child: Row(
-                  children: [
-                    Icon(Icons.logout, color: Colors.white),
-                    const SizedBox(width: 8),
-                    const Text(
-                      "تسجيل الخروج",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ],
+                child: ListTile(
+                  leading: const Icon(Icons.logout, color: Colors.white),
+                  title: const Text(
+                    "تسجيل الخروج",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
               PopupMenuItem<String>(
                 value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(Icons.delete_forever, color: Colors.white),
-                    const SizedBox(width: 8),
-                    const Text(
-                      "حذف الحساب",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ],
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.delete_forever,
+                    color: Colors.white,
+                  ),
+                  title: const Text(
+                    "حذف الحساب",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ],
@@ -263,7 +310,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildInfoCard(String title, List<Widget> children) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
+      color: Colors.white,
+      margin: const EdgeInsets.only(bottom: 20),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -271,7 +319,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Text(
               title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             ...children,
@@ -289,9 +337,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Text(
             "$label :",
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
-          Text(value),
+          Text(value, style: const TextStyle(fontSize: 16)),
         ],
       ),
     );

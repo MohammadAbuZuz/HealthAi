@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'settings_theme.dart';
+import 'package:healthai/features/Setting/settings_theme.dart';
 
 //مكون لعنصر الإعداد الفردي
 class SettingsItem extends StatelessWidget {

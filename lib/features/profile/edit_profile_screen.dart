@@ -215,7 +215,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             bottom: 0,
                             right: 0,
                             child: CircleAvatar(
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Color(0xFF769DAD),
                               child: IconButton(
                                 icon: const Icon(
                                   Icons.camera_alt,
@@ -268,17 +268,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         return null;
                       },
                     ),
-
-                    // الجنس (Dropdown)
-                    _buildDropdown(
-                      'الجنس',
-                      _selectedGender,
-                      AppConstants.genders,
-                      (value) {
-                        setState(() => _selectedGender = value!);
-                      },
-                    ),
-
                     // الطول
                     CustomTextField(
                       controller: _heightController,
@@ -306,6 +295,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         return null;
                       },
                     ),
+                    // الجنس (Dropdown)
+                    _buildDropdown(
+                      'الجنس',
+                      _selectedGender,
+                      AppConstants.genders,
+                      (value) {
+                        setState(() => _selectedGender = value!);
+                      },
+                    ),
 
                     // الهدف
                     _buildDropdown('الهدف', _selectedGoal, AppConstants.goals, (
@@ -323,8 +321,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         setState(() => _selectedActivity = value!);
                       },
                     ),
-
-                    const SizedBox(height: 20),
                     CustomButton(
                       text: _isLoading ? 'جاري التحديث...' : 'تحديث المعلومات',
                       onPressed: _isLoading ? null : _updateProfile,
@@ -356,7 +352,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           fillColor: const Color(0xFFF2F2F2),
           labelText: title,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
           ),
         ),

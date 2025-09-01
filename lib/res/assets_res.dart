@@ -12,8 +12,7 @@ class AssetsRes {
   static const String ARTICLES = 'assets/images/articles.svg';
   static const String BANDAGE = 'assets/images/bandage.svg';
   static const String DUMBBELL = 'assets/images/dumbbell.svg';
-  static const String MEDICAL_CONSULTATION =
-      'assets/images/medical_consultation.svg';
+  static const String MEDICAL_CONSULTATION = 'assets/images/medical_consultation.svg';
   static const String NOTIFICATION = 'assets/images/notification.svg';
   static const String PROFILE2 = 'assets/images/profile2.svg';
   static const String THERMOMETER = 'assets/images/thermometer.svg';

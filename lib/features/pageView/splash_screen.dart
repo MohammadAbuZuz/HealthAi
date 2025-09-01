@@ -170,7 +170,7 @@ class _SplashScreenState extends State<SplashScreen> {
                               );
                             },
                             child: const Text(
-                              "Skip",
+                              "تخطي",
                               style: TextStyle(
                                 color: Color(0xFF769DAD),
                                 fontSize: 16,
@@ -214,8 +214,8 @@ class _SplashScreenState extends State<SplashScreen> {
                           ),
                           child: Text(
                             currentPage < splashData.length - 1
-                                ? "Next"
-                                : "Get Started",
+                                ? "التالي"
+                                : "ابدا الان",
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,

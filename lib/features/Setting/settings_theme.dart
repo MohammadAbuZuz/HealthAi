@@ -32,8 +32,8 @@ class SettingsTheme {
     boxShadow: [
       BoxShadow(
         color: Color(0x11000000),
-        spreadRadius: 1,
-        blurRadius: 4,
+        spreadRadius: 4,
+        blurRadius: 7,
         offset: Offset(0, 2),
       ),
     ],

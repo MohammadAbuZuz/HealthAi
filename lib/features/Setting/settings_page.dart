@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:healthai/Setting/settings_item.dart';
+import 'package:healthai/features/Setting/settings_item.dart';
+import 'package:healthai/features/Setting/settings_section.dart';
 
-import 'settings_section.dart';
 
 //الصفحة الرئيسية للإعدادات
 class SettingsPage extends StatelessWidget {
@@ -10,6 +10,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'HealthAI',
