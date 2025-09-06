@@ -7,6 +7,8 @@ import 'package:healthai/services/constants.dart';
 import 'package:healthai/services/local_storage_service.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../services/responsive.dart';
+
 class EditProfileScreen extends StatefulWidget {
   final Function(Map<String, dynamic>)? onProfileUpdated;
   const EditProfileScreen({super.key, this.onProfileUpdated});
@@ -159,7 +161,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: Responsive.responsivePadding(
+        context,
+        mobile: const EdgeInsets.all(16),
+        tablet: const EdgeInsets.all(24),
+        desktop: const EdgeInsets.all(32),
+      ),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -178,10 +185,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'تعديل الملف الشخصي',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: Responsive.fontSize(
+                              context,
+                              mobile: 18,
+                              tablet: 22,
+                              desktop: 26,
+                            ),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -198,7 +210,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: Stack(
                         children: [
                           CircleAvatar(
-                            radius: 58,
+                            radius: Responsive.responsiveValue(
+                              context,
+                              mobile: 50,
+                              tablet: 70,
+                              desktop: 90,
+                            ),
                             backgroundColor: Colors.grey[300],
                             backgroundImage: _selectedImage != null
                                 ? FileImage(_selectedImage!)

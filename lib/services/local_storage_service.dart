@@ -14,21 +14,34 @@ class LocalStorageService {
 
   // حفظ مستخدم جديد
   // في عملية التسجيل
+
   static Future<bool> registerUser(Map<String, dynamic> userData) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final users = await getUsers();
-
+      // جلب المستخدمين الحاليين
+      final usersString = prefs.getString(_usersKey);
+      List<Map<String, dynamic>> users = [];
+      if (usersString != null && usersString.isNotEmpty) {
+        // تحويل البيانات من JSON إلى List<Map>
+        final List<dynamic> decodedUsers = json.decode(usersString);
+        users = decodedUsers.cast<Map<String, dynamic>>();
+      }
       // التحقق إذا الإيميل موجود مسبقاً
       if (users.any((user) => user['email'] == userData['email'])) {
         return false;
       }
-
       // إضافة ID فريد للمستخدم
       userData['id'] = DateTime.now().millisecondsSinceEpoch.toString();
 
+      // إضافة المستخدم الجديد إلى القائمة
       users.add(userData);
+
+      // حفظ القائمة المحدثة
       await prefs.setString(_usersKey, json.encode(users));
+
+      // حفظ المستخدم كحالي مباشرة بعد التسجيل
+      await prefs.setString(_currentUserKey, json.encode(userData));
+
       return true;
     } catch (e) {
       print('خطأ في حفظ المستخدم: $e');
@@ -43,17 +56,27 @@ class LocalStorageService {
   ) async {
     try {
       final users = await getUsers();
+      print('عدد المستخدمين المسجلين: ${users.length}');
+
+      // طباعة تفصيلية لجميع المستخدمين
+      for (var user in users) {
+        print(
+          'مستخدم: ${user['email']} - كلمة المرور: ${user['password'] ?? "NULL"} - جميع البيانات: $user',
+        );
+      }
 
       final user = users.firstWhereOrNull(
         (u) => u['email'] == email && u['password'] == password,
       );
 
-      if (user != null && user.isNotEmpty) {
+      if (user != null) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString(_currentUserKey, json.encode(user));
+        print('تم تسجيل الدخول بنجاح: $email');
         return user;
       }
 
+      print('فشل تسجيل الدخول: $email - كلمة المرور المدخلة: $password');
       return null;
     } catch (e) {
       print('خطأ في تسجيل الدخول: $e');
@@ -66,9 +89,12 @@ class LocalStorageService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final usersString = prefs.getString(_usersKey);
-      if (usersString != null) {
+
+      if (usersString != null && usersString.isNotEmpty) {
         final List<dynamic> usersList = json.decode(usersString);
-        return usersList.cast<Map<String, dynamic>>();
+        return usersList
+            .map((user) => Map<String, dynamic>.from(user))
+            .toList();
       }
       return [];
     } catch (e) {
@@ -92,10 +118,38 @@ class LocalStorageService {
     }
   }
 
-  // تسجيل الخروج
+  //تسجيل الخروج
   static Future<void> logout() async {
+    final currentUser = await getCurrentUser();
+    final userEmail = currentUser?['email'];
+
+    if (userEmail != null) {
+      // مسح جميع بيانات هذا المستخدم بما فيها التنبيهات
+      await _clearAllUserData(userEmail);
+    }
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_currentUserKey);
+    print('تم تسجيل الخروج ومسح بيانات المستخدم');
+  }
+
+  /// مسح جميع بيانات مستخدم معين
+  static Future<void> _clearAllUserData(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // الحصول على جميع المفاتيح
+    final allKeys = prefs.getKeys();
+
+    // مسح المفاتيح الخاصة بهذا المستخدم فقط
+    for (final key in allKeys) {
+      if (key.contains('user_${email}_') ||
+          key.contains('notifications_$email')) {
+        await prefs.remove(key);
+        print('تم مسح المفتاح: $key');
+      }
+    }
+
+    print('تم مسح جميع بيانات المستخدم: $email');
   }
 
   // تحديث بيانات المستخدم

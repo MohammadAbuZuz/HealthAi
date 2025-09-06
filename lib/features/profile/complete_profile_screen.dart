@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:healthai/core/widget/custom_button.dart';
 import 'package:healthai/core/widget/custom_text_field.dart';
+import 'package:healthai/features/profile/register/login_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../navigation/main_screen.dart';
 import '../../services/constants.dart';
 import '../../services/local_storage_service.dart';
+import '../../services/responsive.dart'; // ✅ ضفنا كلاس Responsive
 
 class CompleteProfileScreen extends StatefulWidget {
   final String userName;
@@ -41,43 +42,25 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       setState(() => _isLoading = true);
 
       try {
-        // جلب المستخدم الحالي من التخزين
         final currentUser = await LocalStorageService.getCurrentUser();
+        final updatedUser = {
+          'name': widget.userName,
+          'email': widget.email,
+          'age': _ageController.text,
+          'height': _heightController.text,
+          'weight': _weightController.text,
+          'goal': _selectedGoal,
+          'activityLevel': _selectedActivity,
+          'gender': _selectedGender,
+          'profileImage': _selectedImage?.path ?? '',
+        };
 
-        if (currentUser != null) {
-          final updatedUser = {...currentUser};
-          updatedUser['name'] = widget.userName;
-          updatedUser['email'] = widget.email;
-          updatedUser['age'] = _ageController.text;
-          updatedUser['height'] = _heightController.text;
-          updatedUser['weight'] = _weightController.text;
-          updatedUser['goal'] = _selectedGoal;
-          updatedUser['activityLevel'] = _selectedActivity;
-          updatedUser['gender'] = _selectedGender;
-          updatedUser['profileImage'] = _selectedImage?.path ?? '';
-
-          await LocalStorageService.updateUser(updatedUser);
-        } else {
-          // لو المستخدم مش موجود، نعمل إدخال جديد
-          final newUser = {
-            'name': widget.userName,
-            'email': widget.email,
-            'age': _ageController.text,
-            'height': _heightController.text,
-            'weight': _weightController.text,
-            'goal': _selectedGoal,
-            'activityLevel': _selectedActivity,
-            'gender': _selectedGender,
-            'profileImage': _selectedImage?.path ?? '',
-          };
-
-          await LocalStorageService.updateUser(newUser);
-        }
+        await LocalStorageService.updateUser(updatedUser);
 
         if (!mounted) return;
-        Navigator.pop(
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainScreen()),
+          MaterialPageRoute(builder: (context) => LoginScreen()),
         );
       } catch (e) {
         ScaffoldMessenger.of(
@@ -86,24 +69,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       } finally {
         setState(() => _isLoading = false);
       }
-    }
-  }
-
-  Future<void> _pickImageFromGallery() async {
-    final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedFile != null) {
-      setState(() => _selectedImage = File(pickedFile.path));
-    }
-  }
-
-  Future<void> _pickImageFromCamera() async {
-    final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.camera,
-    );
-    if (pickedFile != null) {
-      setState(() => _selectedImage = File(pickedFile.path));
     }
   }
 
@@ -120,7 +85,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               title: const Text('من المعرض'),
               onTap: () {
                 Navigator.pop(context);
-                _pickImageFromGallery();
+                _pickImage(ImageSource.gallery);
               },
             ),
             ListTile(
@@ -128,7 +93,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               title: const Text('الكاميرا'),
               onTap: () {
                 Navigator.pop(context);
-                _pickImageFromCamera();
+                _pickImage(ImageSource.camera);
               },
             ),
           ],
@@ -137,28 +102,74 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     );
   }
 
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() => _selectedImage = File(pickedFile.path));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('أكمل معلوماتك الشخصية')),
+      appBar: AppBar(
+        title: Text(
+          'أكمل معلوماتك الشخصية',
+          style: TextStyle(
+            fontSize: Responsive.fontSize(
+              context,
+              mobile: 18,
+              tablet: 20,
+              desktop: 22,
+            ),
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: Responsive.responsivePadding(
+          context,
+          mobile: const EdgeInsets.all(16),
+          tablet: const EdgeInsets.all(24),
+          desktop: const EdgeInsets.symmetric(horizontal: 100, vertical: 40),
+        ),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              const SizedBox(height: 10),
+              SizedBox(
+                height: Responsive.responsiveValue(
+                  context,
+                  mobile: 10,
+                  tablet: 20,
+                  desktop: 40,
+                ),
+              ),
+
               // صورة البروفايل
               Stack(
                 children: [
                   CircleAvatar(
-                    radius: 58,
+                    radius: Responsive.responsiveValue(
+                      context,
+                      mobile: 50,
+                      tablet: 70,
+                      desktop: 90,
+                    ),
                     backgroundColor: Colors.grey[300],
                     backgroundImage: _selectedImage != null
                         ? FileImage(_selectedImage!)
                         : null,
                     child: _selectedImage == null
-                        ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                        ? Icon(
+                            Icons.person,
+                            size: Responsive.responsiveValue(
+                              context,
+                              mobile: 40,
+                              tablet: 60,
+                              desktop: 80,
+                            ),
+                            color: Colors.grey,
+                          )
                         : null,
                   ),
                   Positioned(
@@ -166,17 +177,40 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                     right: 0,
                     child: CircleAvatar(
                       backgroundColor: Colors.blue,
+                      radius: Responsive.responsiveValue(
+                        context,
+                        mobile: 18,
+                        tablet: 22,
+                        desktop: 26,
+                      ),
                       child: IconButton(
-                        icon: const Icon(Icons.camera_alt, color: Colors.white),
+                        icon: Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: Responsive.responsiveValue(
+                            context,
+                            mobile: 16,
+                            tablet: 20,
+                            desktop: 24,
+                          ),
+                        ),
                         onPressed: _showImagePickerDialog,
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
 
-              // العمر
+              SizedBox(
+                height: Responsive.responsiveValue(
+                  context,
+                  mobile: 16,
+                  tablet: 24,
+                  desktop: 32,
+                ),
+              ),
+
+              // الحقول
               CustomTextField(
                 controller: _ageController,
                 obscureText: false,
@@ -189,14 +223,12 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 },
               ),
 
-              // الجنس (Dropdown)
               _buildDropdown('الجنس', _selectedGender, AppConstants.genders, (
                 value,
               ) {
                 setState(() => _selectedGender = value!);
               }),
 
-              // الطول
               CustomTextField(
                 controller: _heightController,
                 obscureText: false,
@@ -209,7 +241,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 },
               ),
 
-              // الوزن
               CustomTextField(
                 controller: _weightController,
                 obscureText: false,
@@ -222,14 +253,12 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 },
               ),
 
-              // الهدف
               _buildDropdown('الهدف', _selectedGoal, AppConstants.goals, (
                 value,
               ) {
                 setState(() => _selectedGoal = value!);
               }),
 
-              // مستوى النشاط
               _buildDropdown(
                 'مستوى النشاط',
                 _selectedActivity,
@@ -239,7 +268,15 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 },
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(
+                height: Responsive.responsiveValue(
+                  context,
+                  mobile: 16,
+                  tablet: 24,
+                  desktop: 32,
+                ),
+              ),
+
               CustomButton(
                 text: _isLoading ? 'جاري الحفظ...' : 'حفظ المعلومات',
                 onPressed: _isLoading ? null : _completeProfile,
@@ -262,13 +299,34 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       child: DropdownButtonFormField<String>(
         value: value,
         items: items.map((String item) {
-          return DropdownMenuItem<String>(value: item, child: Text(item));
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Text(
+              item,
+              style: TextStyle(
+                fontSize: Responsive.fontSize(
+                  context,
+                  mobile: 14,
+                  tablet: 16,
+                  desktop: 18,
+                ),
+              ),
+            ),
+          );
         }).toList(),
         onChanged: onChanged,
         decoration: InputDecoration(
           filled: true,
           fillColor: const Color(0xFFF2F2F2),
           labelText: title,
+          labelStyle: TextStyle(
+            fontSize: Responsive.fontSize(
+              context,
+              mobile: 14,
+              tablet: 16,
+              desktop: 18,
+            ),
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide.none,

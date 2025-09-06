@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../services/responsive.dart';
 import '../profile/register/login_screen.dart';
 
 class SplashWrapper extends StatefulWidget {
@@ -67,7 +68,6 @@ class _SplashWrapperState extends State<SplashWrapper> {
   }
 }
 
-// باقي الكود بدون تغيير...
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -105,7 +105,7 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             children: [
               Expanded(
-                flex: 3,
+                flex: Responsive.isMobile(context) ? 4 : 3,
                 child: PageView.builder(
                   controller: _pageController,
                   onPageChanged: (value) {
@@ -121,9 +121,16 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               Expanded(
-                flex: 2,
+                flex: Responsive.isMobile(context) ? 2 : 2,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 36),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Responsive.responsiveValue(
+                      context,
+                      mobile: 24,
+                      tablet: 36,
+                      desktop: 48,
+                    ),
+                  ),
                   child: Column(
                     children: <Widget>[
                       const Spacer(),
@@ -134,13 +141,37 @@ class _SplashScreenState extends State<SplashScreen> {
                           splashData.length,
                           (index) => Container(
                             margin: const EdgeInsets.symmetric(horizontal: 6),
-                            width: currentPage == index ? 24 : 12,
-                            height: 12,
+                            width: currentPage == index
+                                ? Responsive.responsiveValue(
+                                    context,
+                                    mobile: 20,
+                                    tablet: 24,
+                                    desktop: 28,
+                                  )
+                                : Responsive.responsiveValue(
+                                    context,
+                                    mobile: 10,
+                                    tablet: 12,
+                                    desktop: 14,
+                                  ),
+                            height: Responsive.responsiveValue(
+                              context,
+                              mobile: 10,
+                              tablet: 12,
+                              desktop: 14,
+                            ),
                             decoration: BoxDecoration(
                               color: currentPage == index
                                   ? const Color(0xFF8EDDFF)
                                   : const Color(0xFFD8D8D8),
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(
+                                Responsive.responsiveValue(
+                                  context,
+                                  mobile: 5,
+                                  tablet: 6,
+                                  desktop: 7,
+                                ),
+                              ),
                               boxShadow: [
                                 if (currentPage == index)
                                   BoxShadow(
@@ -169,21 +200,38 @@ class _SplashScreenState extends State<SplashScreen> {
                                 ),
                               );
                             },
-                            child: const Text(
+                            child: Text(
                               "تخطي",
                               style: TextStyle(
-                                color: Color(0xFF769DAD),
-                                fontSize: 16,
+                                color: const Color(0xFF769DAD),
+                                fontSize: Responsive.fontSize(
+                                  context,
+                                  mobile: 14,
+                                  tablet: 16,
+                                  desktop: 18,
+                                ),
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                         ),
-                      const SizedBox(height: 16),
+                      SizedBox(
+                        height: Responsive.responsiveValue(
+                          context,
+                          mobile: 12,
+                          tablet: 16,
+                          desktop: 20,
+                        ),
+                      ),
                       // زر الاستمرار
                       SizedBox(
                         width: double.infinity,
-                        height: 56,
+                        height: Responsive.responsiveValue(
+                          context,
+                          mobile: 48,
+                          tablet: 56,
+                          desktop: 60,
+                        ),
                         child: ElevatedButton(
                           onPressed: () {
                             if (currentPage < splashData.length - 1) {
@@ -205,7 +253,14 @@ class _SplashScreenState extends State<SplashScreen> {
                             backgroundColor: const Color(0xFF8EDDFF),
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(
+                                Responsive.responsiveValue(
+                                  context,
+                                  mobile: 12,
+                                  tablet: 16,
+                                  desktop: 20,
+                                ),
+                              ),
                             ),
                             elevation: 5,
                             shadowColor: const Color(
@@ -216,8 +271,13 @@ class _SplashScreenState extends State<SplashScreen> {
                             currentPage < splashData.length - 1
                                 ? "التالي"
                                 : "ابدا الان",
-                            style: const TextStyle(
-                              fontSize: 18,
+                            style: TextStyle(
+                              fontSize: Responsive.fontSize(
+                                context,
+                                mobile: 16,
+                                tablet: 18,
+                                desktop: 20,
+                              ),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -245,32 +305,66 @@ class SplashContent extends StatelessWidget {
     return Column(
       children: <Widget>[
         const Spacer(flex: 1),
-        const Text(
+        Text(
           "HEALTHILY",
           style: TextStyle(
-            fontSize: 32,
-            color: Color(0xFF8EDDFF),
+            fontSize: Responsive.responsiveValue(
+              context,
+              mobile: 28,
+              tablet: 32,
+              desktop: 36,
+            ),
+            color: const Color(0xFF8EDDFF),
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(
+          height: Responsive.responsiveValue(
+            context,
+            mobile: 12,
+            tablet: 16,
+            desktop: 20,
+          ),
+        ),
         Text(
           text!,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 18,
-            color: Color(0xFF6A6A6A),
+          style: TextStyle(
+            fontSize: Responsive.fontSize(
+              context,
+              mobile: 16,
+              tablet: 18,
+              desktop: 20,
+            ),
+            color: const Color(0xFF6A6A6A),
             height: 1.5,
           ),
         ),
         const Spacer(flex: 1),
         // استخدام Lottie لعرض الرسوم المتحركة من ملف JSON في assets
         Container(
-          width: 320,
-          height: 360,
+          width: Responsive.responsiveValue(
+            context,
+            mobile: 280,
+            tablet: 320,
+            desktop: 360,
+          ),
+          height: Responsive.responsiveValue(
+            context,
+            mobile: 300,
+            tablet: 360,
+            desktop: 400,
+          ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(
+              Responsive.responsiveValue(
+                context,
+                mobile: 16,
+                tablet: 20,
+                desktop: 24,
+              ),
+            ),
             boxShadow: [
               BoxShadow(
                 color: const Color(0xFF8EDDFF).withOpacity(0.2),

@@ -4,6 +4,7 @@ import 'package:healthai/core/widget/custom_text_field.dart';
 import 'package:healthai/navigation/main_screen.dart';
 
 import '../../../services/local_storage_service.dart';
+import '../../../services/responsive.dart'; // استدعاء كلاس Responsive
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -68,24 +69,66 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       appBar: AppBar(title: const Text('تغيير كلمة المرور')),
       body: Container(
-        padding: const EdgeInsets.all(36),
+        padding: Responsive.responsivePadding(
+          context,
+          mobile: const EdgeInsets.all(20),
+          tablet: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+          desktop: const EdgeInsets.symmetric(horizontal: 100, vertical: 50),
+        ),
         child: SingleChildScrollView(
           child: Form(
             key: _key,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
-                const Text(
+                SizedBox(
+                  height: Responsive.responsiveValue(
+                    context,
+                    mobile: 20,
+                    tablet: 40,
+                    desktop: 60,
+                  ),
+                ),
+                Text(
                   'كلمة المرور الجديدة',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: Responsive.fontSize(
+                      context,
+                      mobile: 20,
+                      tablet: 24,
+                      desktop: 28,
+                    ),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                const SizedBox(height: 10),
-                const Text(
+                SizedBox(
+                  height: Responsive.responsiveValue(
+                    context,
+                    mobile: 10,
+                    tablet: 20,
+                    desktop: 30,
+                  ),
+                ),
+                Text(
                   'أدخل كلمة المرور الجديدة',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: Responsive.fontSize(
+                      context,
+                      mobile: 14,
+                      tablet: 16,
+                      desktop: 18,
+                    ),
+                    color: Colors.grey,
+                  ),
                 ),
-                const SizedBox(height: 30),
+                SizedBox(
+                  height: Responsive.responsiveValue(
+                    context,
+                    mobile: 20,
+                    tablet: 30,
+                    desktop: 40,
+                  ),
+                ),
                 CustomTextField(
                   controller: newPasswordController,
                   obscureText: true,
@@ -101,7 +144,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(
+                  height: Responsive.responsiveValue(
+                    context,
+                    mobile: 15,
+                    tablet: 25,
+                    desktop: 35,
+                  ),
+                ),
                 CustomTextField(
                   controller: confirmPasswordController,
                   obscureText: true,
@@ -117,7 +167,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 30),
+                SizedBox(
+                  height: Responsive.responsiveValue(
+                    context,
+                    mobile: 25,
+                    tablet: 35,
+                    desktop: 50,
+                  ),
+                ),
                 CustomButton(
                   text: 'تغيير كلمة المرور',
                   onPressed: () => _updatePassword(context),

@@ -1,5 +1,6 @@
 // main.dart
 import 'package:flutter/material.dart';
+import 'package:healthai/features/notifications/utils/notification_utils.dart';
 import 'package:healthai/features/pageView/splash_screen.dart';
 import 'package:healthai/features/profile/complete_profile_screen.dart';
 import 'package:healthai/features/profile/register/singUp_screen.dart';
@@ -11,8 +12,10 @@ import 'features/notifications/provider/notification_provider.dart';
 import 'features/profile/profile_screen.dart';
 import 'features/profile/register/login_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // تهيئة نظام الإشعارات
+  await NotificationUtils.initialize();
   runApp(
     MultiProvider(
       providers: [

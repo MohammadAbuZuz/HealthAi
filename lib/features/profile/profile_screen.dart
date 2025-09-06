@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:healthai/features/profile/edit_profile_screen.dart'; // تأكد من هذا الاستيراد
+import 'package:healthai/features/notifications/provider/notification_provider.dart';
+import 'package:healthai/features/profile/edit_profile_screen.dart';
 import 'package:healthai/features/profile/register/login_screen.dart';
 import 'package:healthai/services/local_storage_service.dart';
+import 'package:provider/provider.dart';
 
+import '../../services/responsive.dart';
 import '../Setting/settings_page.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -32,16 +35,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  // دالة لتحديث البيانات محلياً بعد التعديل - هذه الدالة لازم تكون موجودة
   void _updateUserData(Map<String, dynamic> updatedData) {
     setState(() {
       userData = updatedData;
     });
-    // حفظ البيانات المحدثة في التخزين المحلي مع استدعاء دالة _deleteAccount(); من local
     LocalStorageService.updateUser(updatedData);
   }
 
-  //رسالة تأكديد لحذف الحساب مع الحذف
   Future<void> _showDeleteConfirmation() async {
     return showDialog(
       context: context,
@@ -82,8 +82,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // إرجاع true للموافقة
-                _deleteAccount(); // استدعاء دالة الحذف
+                Navigator.of(context).pop(true);
+                _deleteAccount();
               },
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
@@ -97,13 +97,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         );
       },
-    ).then((value) {
-      if (value == true) {
-        _deleteAccount(); // التأكد من استدعاء الحذف إذا وافق المستخدم
-      }
-    });
+    );
   }
-  //رسالة تأكيد لتسجيل الخروج
 
   Future<void> _showLogoutConfirmation() async {
     return showDialog(
@@ -133,16 +128,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _deleteAccount() async {
     try {
       if (userData != null && userData!['email'] != null) {
+        // استخدم Provider لإخطار NotificationProvider بمسح التنبيهات
+        final notificationProvider = Provider.of<NotificationProvider>(
+          context,
+          listen: false,
+        );
+        notificationProvider.clearNotifications();
+
         await LocalStorageService.deleteUser(userData!['email']);
 
         if (!mounted) return;
 
-        // إظهار رسالة نجاح
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text("تم حذف الحساب بنجاح")));
 
-        // الانتقال إلى شاشة تسجيل الدخول
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => LoginScreen()),
@@ -162,7 +162,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _signOut() async {
-    await LocalStorageService.clearCurrentUser();
+    // استخدم Provider لإخطار NotificationProvider بمسح التنبيهات
+    final notificationProvider = Provider.of<NotificationProvider>(
+      context,
+      listen: false,
+    );
+    notificationProvider.clearNotifications();
+
+    await LocalStorageService.logout();
+
     if (!mounted) return;
     Navigator.pushAndRemoveUntil(
       context,
@@ -175,15 +183,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ).showSnackBar(const SnackBar(content: Text("تم تسجيل الخروج بنجاح")));
   }
 
-  // دالة للتعامل مع خيارات القائمة
   void _handleMenuSelection(String value) {
     switch (value) {
       case 'edit':
-        // الانتقال إلى شاشة التعديل
-        showEditProfileBottomSheet(
-          context,
-          onProfileUpdated: _updateUserData, // هنا بنمرر الدالة
-        );
+        showEditProfileBottomSheet(context, onProfileUpdated: _updateUserData);
         break;
       case 'logout':
         _showLogoutConfirmation();
@@ -271,11 +274,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(
+          Responsive.responsiveValue(
+            context,
+            mobile: 12,
+            tablet: 16,
+            desktop: 24,
+          ),
+        ),
         children: [
           Center(
             child: CircleAvatar(
-              radius: 60,
+              radius: Responsive.responsiveValue(
+                context,
+                mobile: 50,
+                tablet: 60,
+                desktop: 80,
+              ),
               backgroundImage:
                   userData!['profileImage'] != null &&
                       userData!['profileImage'].toString().isNotEmpty
@@ -288,13 +303,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   : null,
             ),
           ),
-          const SizedBox(height: 40),
-
+          SizedBox(
+            height: Responsive.responsiveValue(
+              context,
+              mobile: 20,
+              tablet: 30,
+              desktop: 40,
+            ),
+          ),
           _buildInfoCard("المعلومات الأساسية", [
             _buildInfoRow("الاسم", userData!['name'] ?? ""),
             _buildInfoRow("البريد", userData!['email'] ?? ""),
           ]),
-
           _buildInfoCard("المعلومات الشخصية", [
             _buildInfoRow("العمر", "${userData!['age'] ?? ''}"),
             _buildInfoRow("الجنس", userData!['gender'] ?? ""),
@@ -311,17 +331,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildInfoCard(String title, List<Widget> children) {
     return Card(
       color: Colors.white,
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: EdgeInsets.only(
+        bottom: Responsive.responsiveValue(
+          context,
+          mobile: 12,
+          tablet: 16,
+          desktop: 20,
+        ),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(
+          Responsive.responsiveValue(
+            context,
+            mobile: 12,
+            tablet: 16,
+            desktop: 20,
+          ),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: Responsive.fontSize(
+                  context,
+                  mobile: 16,
+                  tablet: 18,
+                  desktop: 20,
+                ),
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(
+              height: Responsive.responsiveValue(
+                context,
+                mobile: 6,
+                tablet: 8,
+                desktop: 10,
+              ),
+            ),
             ...children,
           ],
         ),
@@ -337,9 +386,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Text(
             "$label :",
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: Responsive.fontSize(
+                context,
+                mobile: 14,
+                tablet: 16,
+                desktop: 18,
+              ),
+            ),
           ),
-          Text(value, style: const TextStyle(fontSize: 16)),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: Responsive.fontSize(
+                context,
+                mobile: 12,
+                tablet: 14,
+                desktop: 16,
+              ),
+            ),
+          ),
         ],
       ),
     );
