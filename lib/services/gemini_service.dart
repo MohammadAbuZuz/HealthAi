@@ -1,13 +1,15 @@
-import 'package:google_generative_ai/google_generative_ai.dart'; // هذا الاستيراد ضروري
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiService {
-  static const String _apiKey =
-      'your_gemini_api_key_here'; // سيتم استبداله لاحقاً
+  //  المفتاح
+  static const String _apiKey = 'AIzaSyCaxfoT4tJHKcFNmMs0Vvnkc_bMzkefGUo';
 
-  // إرسال رسالة إلى Gemini API
   static Future<String> sendMessage(String prompt) async {
     try {
-      final model = GenerativeModel(model: 'gemini-pro', apiKey: _apiKey);
+      final model = GenerativeModel(
+        model: 'gemini-1.5-flash', //   الموديل
+        apiKey: _apiKey,
+      );
 
       final response = await model.generateContent([Content.text(prompt)]);
 

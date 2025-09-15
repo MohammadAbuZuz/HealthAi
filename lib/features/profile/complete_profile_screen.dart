@@ -44,6 +44,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       try {
         final currentUser = await LocalStorageService.getCurrentUser();
         final updatedUser = {
+          ...currentUser!,
           'name': widget.userName,
           'email': widget.email,
           'age': _ageController.text,

@@ -31,10 +31,18 @@ class NotificationProvider with ChangeNotifier {
   }
 
   Future<void> removeNotification(String id) async {
+    // 1. نمسح من الذاكرة
     _notifications.removeWhere((notification) => notification.id == id);
+
+    // 2. نمسح من التخزين الدائم
+    await _saveToStorage(); // ← هذا السطر هو السر!
+
+    // 3. نلغي الإشعار من النظام
     await NotificationUtils.cancelNotification(int.parse(id));
+
     notifyListeners();
-    await _saveToStorage();
+
+    print('تم حذف التنبيه نهائياً من الذاكرة والتخزين');
   }
 
   Future<void> loadNotifications() async {
@@ -96,10 +104,11 @@ class NotificationProvider with ChangeNotifier {
     );
   }
 
-  // دالة جديدة لمسح التنبيهات من الذاكرة عند تسجيل الخروج
   void clearNotifications() {
-    _notifications.clear();
-    _currentUserEmail = null;
+    _notifications.clear(); // نمسح من الذاكرة فقط
+    _currentUserEmail = null; // ننسى المستخدم الحالي
     notifyListeners();
+    // لا نمسح من التخزين الدائم!
+    print('تم مسح التنبيهات من الذاكرة المؤقتة فقط');
   }
 }

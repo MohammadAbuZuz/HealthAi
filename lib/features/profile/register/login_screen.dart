@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
           passwordController.text,
         );
 
-        if (user != null) {
+        if (user != null && user['password'] != null) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => MainScreen()),

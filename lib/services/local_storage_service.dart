@@ -49,7 +49,6 @@ class LocalStorageService {
     }
   }
 
-  // تسجيل الدخول
   static Future<Map<String, dynamic>?> login(
     String email,
     String password,
@@ -163,14 +162,19 @@ class LocalStorageService {
       );
 
       if (index != -1) {
-        users[index] = updatedUser;
+        // 🔥 دمج البيانات القديمة مع الجديدة (الحفاظ على كلمة المرور)
+        users[index] = {
+          ...users[index], // البيانات القديمة
+          ...updatedUser, // البيانات الجديدة
+        };
+
         await prefs.setString(_usersKey, json.encode(users));
 
         // تحديث المستخدم الحالي إذا كان هو نفسه
         final currentUser = await getCurrentUser();
         if (currentUser != null &&
             currentUser['email'] == updatedUser['email']) {
-          await prefs.setString(_currentUserKey, json.encode(updatedUser));
+          await prefs.setString(_currentUserKey, json.encode(users[index]));
         }
 
         return true;
@@ -182,16 +186,74 @@ class LocalStorageService {
     }
   }
 
+  // التحقق من صحة بيانات المستخدمين
+  static Future<void> debugAllUsers() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final usersString = prefs.getString(_usersKey);
+
+      print('=== 🔍 تحليل بيانات جميع المستخدمين ===');
+
+      if (usersString != null && usersString.isNotEmpty) {
+        final List<dynamic> usersList = json.decode(usersString);
+        final users = usersList.cast<Map<String, dynamic>>();
+
+        for (var i = 0; i < users.length; i++) {
+          final user = users[i];
+          print('👤 المستخدم #${i + 1}:');
+          print('   📧 البريد: ${user['email']}');
+          print('   🔐 كلمة المرور: ${user['password'] ?? 'NULL'}');
+          print('   📝 يحتوي على password: ${user.containsKey('password')}');
+          print('   🆔 ID: ${user['id']}');
+          print('   📛 الاسم: ${user['username']}');
+          print('   ---');
+        }
+      } else {
+        print('📭 لا يوجد مستخدمين مسجلين');
+      }
+    } catch (e) {
+      print('❌ خطأ في تحليل البيانات: $e');
+    }
+  }
+
+  // التحقق من المستخدم الحالي
+  static Future<void> debugCurrentUser() async {
+    try {
+      final currentUser = await getCurrentUser();
+
+      print('=== 🔍 تحليل المستخدم الحالي ===');
+      if (currentUser != null) {
+        print('📧 البريد: ${currentUser['email']}');
+        print('🔐 كلمة المرور: ${currentUser['password'] ?? 'NULL'}');
+        print('📝 يحتوي على password: ${currentUser.containsKey('password')}');
+        print('📦 جميع البيانات: $currentUser');
+      } else {
+        print('📭 لا يوجد مستخدم حالي');
+      }
+    } catch (e) {
+      print('❌ خطأ في تحليل المستخدم الحالي: $e');
+    }
+  }
+
   // حفظ رابط الصورة
   Future<void> saveProfileImageUrl(String url) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_profileImageKey, url);
+
+    final currentUser = await getCurrentUser();
+    final userEmail = currentUser?['email'] ?? 'unknown';
+
+    final userImageKey = 'profile_image_$userEmail';
+    await prefs.setString(userImageKey, url);
   }
 
   // جلب رابط الصورة
   Future<String?> getProfileImageUrl() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_profileImageKey);
+    final currentUser = await getCurrentUser();
+    final userEmail = currentUser?['email'] ?? 'unknown';
+
+    final userImageKey = 'profile_image_$userEmail';
+    return prefs.getString(userImageKey);
   }
 
   /// مسح بيانات المستخدم الحالي
@@ -214,5 +276,43 @@ class LocalStorageService {
     if (currentUser != null && currentUser["email"] == email) {
       await clearCurrentUser();
     }
+  }
+
+  // حفظ بيانات مستخدم معينة
+  static Future<void> saveUserData(
+    String key,
+    List<Map<String, dynamic>> data,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentUser = await getCurrentUser();
+    final userEmail = currentUser?['email'] ?? 'unknown';
+
+    final userKey = 'user_${userEmail}_$key';
+    final dataJson = data.map((item) => jsonEncode(item)).toList();
+
+    await prefs.setStringList(userKey, dataJson);
+  }
+
+  // جلب بيانات مستخدم معينة
+  static Future<List<Map>> getUserData(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentUser = await getCurrentUser();
+    final userEmail = currentUser?['email'] ?? 'unknown';
+
+    final userKey = 'user_${userEmail}_$key';
+    final dataJson = prefs.getStringList(userKey);
+
+    if (dataJson == null) return [];
+
+    return dataJson
+        .map((json) {
+          try {
+            return Map<String, dynamic>.from(jsonDecode(json));
+          } catch (e) {
+            return <String, dynamic>{};
+          }
+        })
+        .where((item) => item.isNotEmpty)
+        .toList();
   }
 }

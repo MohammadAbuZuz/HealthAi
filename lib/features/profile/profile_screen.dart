@@ -162,7 +162,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _signOut() async {
-    // استخدم Provider لإخطار NotificationProvider بمسح التنبيهات
     final notificationProvider = Provider.of<NotificationProvider>(
       context,
       listen: false,

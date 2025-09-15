@@ -5,6 +5,7 @@ import 'package:healthai/features/pageView/splash_screen.dart';
 import 'package:healthai/features/profile/complete_profile_screen.dart';
 import 'package:healthai/features/profile/register/singUp_screen.dart';
 import 'package:healthai/navigation/main_screen.dart';
+import 'package:healthai/services/local_storage_service.dart';
 import 'package:provider/provider.dart';
 
 import 'features/Setting/settings_page.dart';
@@ -16,6 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // تهيئة نظام الإشعارات
   await NotificationUtils.initialize();
+  LocalStorageService.debugAllUsers();
   runApp(
     MultiProvider(
       providers: [

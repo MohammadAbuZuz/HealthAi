@@ -4,8 +4,9 @@ import 'chat_message.dart';
 
 class ChatBubble extends StatelessWidget {
   final ChatMessage message;
+  final String? userImage;
 
-  const ChatBubble({super.key, required this.message});
+  const ChatBubble({super.key, required this.message, this.userImage});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class ChatBubble extends StatelessWidget {
             ? MainAxisAlignment.end
             : MainAxisAlignment.start,
         children: [
-          if (!message.isUser) _buildAvatar(),
+          if (!message.isUser) _buildBotAvatar(),
           Flexible(
             child: Container(
               padding: const EdgeInsets.all(12),
@@ -34,14 +35,14 @@ class ChatBubble extends StatelessWidget {
               ),
             ),
           ),
-          if (message.isUser) _buildAvatar(),
+          if (message.isUser) _buildUserAvatar(),
         ],
       ),
     );
   }
 
-  // بناء صورة المستخدم/البوت
-  Widget _buildAvatar() {
+  // بناء صورة المستخدم
+  Widget _buildUserAvatar() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       child: CircleAvatar(
@@ -52,6 +53,18 @@ class ChatBubble extends StatelessWidget {
           message.isUser ? Icons.person : Icons.health_and_safety,
           color: message.isUser ? Colors.white : Colors.grey,
         ),
+      ),
+    );
+  }
+
+  // بناء أيقونة البوت
+  Widget _buildBotAvatar() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      child: const CircleAvatar(
+        radius: 20,
+        backgroundColor: Color(0xFF769DAD),
+        child: Icon(Icons.health_and_safety, size: 20, color: Colors.white),
       ),
     );
   }

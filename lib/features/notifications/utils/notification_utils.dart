@@ -63,7 +63,6 @@ class NotificationUtils {
     // }
   }
 
-  // في utils/notification_utils.dart، تأكد من طلب الصلاحيات بشكل صحيح
   static Future<void> _requestPermissions() async {
     // طلب صلاحية الإشعارات الأساسية
     var status = await Permission.notification.status;
@@ -74,21 +73,28 @@ class NotificationUtils {
 
     print('حالة صلاحية الإشعارات: $status');
 
-    // صلاحيات إضافية لأندرويد (اختياري)
+    // صلاحيات إضافية لأندرويد
     if (Platform.isAndroid) {
       try {
         final androidInfo = await DeviceInfoPlugin().androidInfo;
         if (androidInfo.version.sdkInt >= 33) {
-          // Android 13+ يحتاج صلاحية notification
-          await Permission.notification.request();
+          // أندرويد 13+ - الصلاحية already requested فوق
+          print('أندرويد 13+ - صلاحية الإشعارات: $status');
         } else {
-          // الإصدارات الأقدم تحتاج scheduleExactAlarm
-          await Permission.scheduleExactAlarm.request();
+          // الإصدارات الأقدم تحتاج صلاحية منفصلة
+          final alarmStatus = await Permission.scheduleExactAlarm.status;
+          if (alarmStatus.isDenied) {
+            await Permission.scheduleExactAlarm.request();
+          }
+          print('حالة صلاحية المنبه الدقيق: $alarmStatus');
         }
       } catch (e) {
         print('خطأ في الحصول على معلومات الجهاز: $e');
-        // استخدم الطريقة القديمة كبديل
-        await Permission.scheduleExactAlarm.request();
+        // كبديل آمن
+        final alarmStatus = await Permission.scheduleExactAlarm.status;
+        if (alarmStatus.isDenied) {
+          await Permission.scheduleExactAlarm.request();
+        }
       }
     }
   }
@@ -101,6 +107,7 @@ class NotificationUtils {
     required bool isDaily,
     String? payload,
   }) async {
+    // تحديد وقت الإشعار
     final now = DateTime.now();
     var scheduledTime = DateTime(
       now.year,
@@ -115,7 +122,7 @@ class NotificationUtils {
     }
 
     final tzDateTime = tz.TZDateTime.from(scheduledTime, tz.local);
-
+    // إعداد تفاصيل الإشعار للأندرويد ← هذا اللي بيظهر في الستارة!
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
           'channel_id',
@@ -130,7 +137,7 @@ class NotificationUtils {
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
       sound: 'default',
     );
-
+    // دمج الإعدادات
     final notificationDetails = NotificationDetails(
       android: androidDetails,
       iOS: iosDetails,

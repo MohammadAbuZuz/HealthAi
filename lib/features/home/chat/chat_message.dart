@@ -9,16 +9,12 @@ class ChatMessage {
     required this.timestamp,
   });
 
-  // تحويل الكائن إلى Map للتخزين (إذا needed لاحقاً)
+  // تحويل إلى Map للتخزين
   Map<String, dynamic> toMap() {
-    return {
-      'text': text,
-      'isUser': isUser,
-      'timestamp': timestamp.toIso8601String(),
-    };
+    return {'text': text, 'isUser': isUser, '': timestamp.toIso8601String()};
   }
 
-  // إنشاء كائن من Map (إذا needed لاحقاً)
+  // إنشاء من Map
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
     return ChatMessage(
       text: map['text'],
