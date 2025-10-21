@@ -13,27 +13,24 @@ export const handleChat = async (req, res) => {
 
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // ✅ استخدم النموذج الصحيح حسب ما ظهر من الاستعلام
     const response = await fetch(
-  `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-  {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: message }],
-        },
-      ],
-    }),
-  }
-);
-
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: message }],
+            },
+          ],
+        }),
+      }
+    );
 
     const data = await response.json();
 
-    // ✅ معالجة الرد من Gemini
     if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
       const reply = data.candidates[0].content.parts[0].text;
       console.log("✅ Gemini reply:", reply);
