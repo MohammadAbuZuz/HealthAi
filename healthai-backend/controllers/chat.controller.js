@@ -22,7 +22,12 @@ export const handleChat = async (req, res) => {
           contents: [
             {
               role: "user",
-              parts: [{ text: message }],
+              parts: [
+                {
+                  text: `أجب على هذا السؤال باختصار وبشكل واضح ومباشر دون تفاصيل غير ضرورية، إلا إذا طلب المستخدم ذلك صراحة. 
+حافظ على نفس لغة السؤال (عربية أو إنجليزية):\n${message}`,
+                },
+              ],
             },
           ],
         }),
