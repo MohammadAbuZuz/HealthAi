@@ -1,0 +1,66 @@
+// main.dart
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:healthai/features/notifications/utils/notification_utils.dart';
+import 'package:healthai/features/pageView/splash_screen.dart';
+import 'package:healthai/features/profile/complete_profile_screen.dart';
+import 'package:healthai/features/profile/register/singUp_screen.dart';
+import 'package:healthai/navigation/main_screen.dart';
+import 'package:healthai/services/local_storage_service.dart';
+import 'package:provider/provider.dart';
+
+import 'features/Setting/settings_page.dart';
+import 'features/notifications/provider/notification_provider.dart';
+import 'features/profile/profile_screen.dart';
+import 'features/profile/register/login_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // تهيئة نظام الإشعارات
+  await NotificationUtils.initialize();
+  LocalStorageService.debugAllUsers();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'HealthAI',
+      theme: ThemeData(
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          },
+        ),
+      ),
+      initialRoute: '/',
+      getPages: [
+        GetPage(name: '/', page: () => SplashScreen()),
+        GetPage(name: '/login', page: () => LoginScreen()),
+        GetPage(name: '/signup', page: () => SingupScreen()),
+        GetPage(name: '/main', page: () => MainScreen()),
+        GetPage(
+            name: '/complete-profile',
+            page: () => CompleteProfileScreen(userName: '', email: '')),
+        GetPage(name: '/profile', page: () => const ProfileScreen()),
+        GetPage(name: '/settings', page: () => const SettingsPage()),
+      ],
+      builder: (context, child) {
+        return Directionality(textDirection: TextDirection.rtl, child: child!);
+      },
+    );
+  }
+}
