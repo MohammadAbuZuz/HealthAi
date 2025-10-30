@@ -7,7 +7,7 @@ class GeminiService {
   static Future<String> sendMessage(String prompt) async {
     try {
       final model = GenerativeModel(
-        model: 'gemini-1.5-flash', //   الموديل
+        model: 'gemini-2.5-flash', //   الموديل
         apiKey: _apiKey,
       );
 
